@@ -61,3 +61,44 @@ Overview:
     Website is stored under the user’s account.
 
     User can edit, delete, or preview the site.
+
+    
+🛠️ Project Setup & Commands
+✅ 1. Clone the Repository
+
+    git clone <repo-url>
+    cd <project-directory>
+    
+📦 2. Create and Activate Virtual Environment
+    
+    python -m venv env
+    source env/bin/activate  # On Windows: env\Scripts\activate
+    
+📥 3. Install Dependencies
+    
+    pip install -r requirements.txt
+    
+🔐 4. Set Up Environment Variables
+    Create a .env file in the root directory:
+
+    SECRET_KEY=your-django-secret-key
+    DEBUG=True
+    ALLOWED_HOSTS=127.0.0.1,localhost
+    GOOGLE_API_KEY=your-google-gemini-api-key
+    
+🧬 5. Apply Migrations
+
+    python manage.py makemigrations
+    python manage.py migrate
+    
+👤 6. Create Superuser
+
+    python manage.py createsuperuser
+    
+🚀 7. Run the Server
+
+    python manage.py runserver
+    Then open your browser:
+    http://127.0.0.1:8000/
+
+🥳 Happy Website Building!! 🥳
