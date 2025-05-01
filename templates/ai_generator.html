@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}AI Website Generator{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">AI Website Generator</h3>
+                <p class="text-muted mb-0">Powered by Google Gemini</p>
+            </div>
+            <div class="card-body">
+                <form id="ai-generator-form" method="POST">
+                    {% csrf_token %}
+                    {{ form|crispy }} <!-- Render the entire form with crispy style -->
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">AI Model</label>
+                                <select class="form-select" id="ai-model" disabled>
+                                    <option selected>gemini-1.5-pro</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                        <button type="submit" class="btn btn-primary" id="generate-btn">
+                            <i class="bi bi-robot"></i> Generate with Gemini
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="ai-status" class="alert alert-info mt-3 d-none">
+                    <div class="d-flex align-items-center">
+                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                        <span id="status-text">Generating content with Gemini AI...</span>
+                    </div>
+                </div>
+                
+                <div id="ai-result" class="mt-4 d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4>Generated Content Preview</h4>
+                        <button class="btn btn-sm btn-outline-secondary" id="refresh-preview">
+                            <i class="bi bi-arrow-repeat"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="border p-3 mb-3 bg-light" id="preview-content">
+                        <!-- AI generated content will appear here -->
+                    </div>
+                    <form method="post" action="{% url 'website-create' %}" id="save-website-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="title" id="save-title">
+                        <input type="hidden" name="business_type" id="save-business-type">
+                        <input type="hidden" name="industry" id="save-industry">
+                        <input type="hidden" name="content" id="save-content">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-save"></i> Save as New Website
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('ai-generator-form');
+    const statusAlert = document.getElementById('ai-status');
+    const statusText = document.getElementById('status-text');
+    const previewContent = document.getElementById('preview-content');
+    const resultSection = document.getElementById('ai-result');
+    const saveForm = document.getElementById('save-website-form');
+    const generateBtn = document.getElementById('generate-btn');
+    const refreshBtn = document.getElementById('refresh-preview');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Show loading state
+        generateBtn.disabled = true;
+        statusAlert.classList.remove('d-none');
+        resultSection.classList.add('d-none');
+        
+        const formData = new FormData(form);
+        
+        fetch('/api/ai/generate/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Accept': 'application/json',
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            const content = data.content[0].text;
+            
+            // Update hidden fields for saving
+            document.getElementById('save-title').value = formData.get('title');
+            document.getElementById('save-business-type').value = formData.get('business_type');
+            document.getElementById('save-industry').value = formData.get('industry');
+            document.getElementById('save-content').value = JSON.stringify(content);
+            
+            // Render preview
+            renderPreview(content);
+            
+            // Show results
+            resultSection.classList.remove('d-none');
+        })
+        .catch(error => {
+            statusText.textContent = 'Error: ' + error.message;
+            statusAlert.classList.remove('alert-info');
+            statusAlert.classList.add('alert-danger');
+        })
+        .finally(() => {
+            generateBtn.disabled = false;
+        });
+    });
+
+    refreshBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        form.dispatchEvent(new Event('submit'));
+    });
+
+    function renderPreview(content) {
+        let html = `
+            <div class="text-center py-4">
+                <h2>${content.hero.headline}</h2>
+                <p class="lead">${content.hero.subheadline}</p>
+            </div>
+            <hr>
+            <div class="mb-4">
+                <h3>About Us</h3>
+                <p>${content.about}</p>
+            </div>
+            <div class="mb-4">
+                <h3>Our Services</h3>
+                <div class="row g-3">
+        `;
+        
+        content.services.forEach(service => {
+            html += `
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">${service.name}</h5>
+                            <p class="card-text">${service.description}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += `
+                </div>
+            </div>
+            <div class="mb-4">
+                <h3>Key Features</h3>
+                <div class="list-group">
+        `;
+        
+        content.features.forEach(feature => {
+            html += `
+                <div class="list-group-item">
+                    <h5 class="mb-1">${feature.title}</h5>
+                    <p class="mb-1">${feature.description}</p>
+                </div>
+            `;
+        });
+        
+        html += `
+                </div>
+            </div>
+            <div class="mb-4">
+                <h3>Contact Us</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <p><i class="bi bi-envelope"></i> ${content.contact.email}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><i class="bi bi-telephone"></i> ${content.contact.phone}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><i class="bi bi-geo-alt"></i> ${content.contact.address}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        previewContent.innerHTML = html;
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

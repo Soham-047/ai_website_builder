@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Create Website{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Create New Website</h3>
+                <p class="card-subtitle text-muted mb-0">Fill in the details to generate your website</p>
+            </div>
+            <div class="card-body">
+                <form method="post" id="website-form">
+                    {% csrf_token %}
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.title.id_for_label }}">Website Title</label>
+                                {{ form.title }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.business_type.id_for_label }}">Business Type</label>
+                                {{ form.business_type }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.industry.id_for_label }}">Industry</label>
+                                {{ form.industry }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Content Source</label>
+                                <div class="input-group">
+                                    <select class="form-select" id="content-source">
+                                        <option value="ai" selected>Generate with Gemini AI</option>
+                                        <option value="manual">Create manually</option>
+                                    </select>
+                                    <button class="btn btn-outline-primary" type="button" id="generate-btn">
+                                        <i class="bi bi-robot"></i> Generate
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="manual-fields" class="d-none">
+                        <h4 class="mb-3">Manual Content</h4>
+                        <!-- Manual content fields would go here -->
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{% url 'website-list-view' %}" class="btn btn-outline-secondary me-md-2">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary" id="submit-button">
+                            Create Website
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const contentSource = document.getElementById('content-source');
+    const manualFields = document.getElementById('manual-fields');
+    const generateBtn = document.getElementById('generate-btn');
+    const form = document.getElementById('website-form');
+    const submitButton = document.getElementById('submit-button');
+
+    contentSource.addEventListener('change', function() {
+        if (this.value === 'manual') {
+            manualFields.classList.remove('d-none');
+        } else {
+            manualFields.classList.add('d-none');
+        }
+    });
+
+    generateBtn.addEventListener('click', function() {
+        alert('This would generate content using Gemini API');
+    });
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent immediate submission
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...';
+
+        setTimeout(() => {
+            form.submit(); // Submit after 5 seconds delay
+        }, 5000);
+    });
+});
+</script>
+{% endblock %}

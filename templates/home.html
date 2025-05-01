@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}AI Website Builder - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero bg-primary text-white text-center py-5">
+    <div class="container">
+        <h1 class="display-4">Build Your Website in Minutes</h1>
+        <p class="lead">With AI-powered website builder, get your business online in no time. No coding required!</p>
+        <a href="{% url 'website-create' %}" class="btn btn-light btn-lg">Create Your Website</a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Why Choose AI Website Builder?</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title">AI-Powered Content Generation</h4>
+                        <p class="card-text">Generate beautiful, customized website content with AI, tailored to your business needs.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title">Easy to Use</h4>
+                        <p class="card-text">No coding skills required. Just fill in the form, and let the AI do the work for you.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title">Fast and Reliable</h4>
+                        <p class="card-text">Build your website quickly, and host it with ease using our reliable platform.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">How It Works</h2>
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <i class="bi bi-pencil-fill display-4 mb-3"></i>
+                <h4>Fill Out the Form</h4>
+                <p>Provide details about your business, industry, and content preferences.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <i class="bi bi-braces display-4 mb-3"></i>
+                <h4>AI Generates Content</h4>
+                <p>Let our AI generate content and structure tailored to your needs.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <i class="bi bi-globe display-4 mb-3"></i>
+                <h4>Launch Your Website</h4>
+                <p>Preview and customize your website, then publish it online instantly.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta bg-dark text-white text-center py-5">
+    <div class="container">
+        <h2 class="display-4">Ready to Create Your Website?</h2>
+        <p class="lead">Get started today and watch your business grow online.</p>
+        <a href="{% if user.is_authenticated %}{% url 'website-create' %}{% else %}{% url 'login' %}{% endif %}" class="btn btn-light btn-lg">
+            Start Building Now
+        </a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Preview: {{ website.title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Preview: {{ website.title }}</h2>
+    <div class="btn-group">
+        <a href="{% url 'website-list-view' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="card-title">Website Details</h5>
+                <p><strong>Business Type:</strong> {{ website.business_type }}</p>
+                <p><strong>Industry:</strong> {{ website.industry }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5 class="card-title">Timestamps</h5>
+                <p><strong>Created:</strong> {{ website.created_at|date:"M d, Y H:i" }}</p>
+                <p><strong>Last Updated:</strong> {{ website.updated_at|date:"M d, Y H:i" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Live Preview</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="website-preview p-4">
+            <!-- Hero Section -->
+            <div class="text-center py-5 mb-4" style="background-color: #f8f9fa; border-radius: 8px;">
+                <h1 style="font-size: 2.5rem;">{{ website.content.hero.headline }}</h1>
+                <p class="lead" style="font-size: 1.25rem;">{{ website.content.hero.subheadline }}</p>
+            </div>
+            
+            <!-- About Section -->
+            <div class="mb-5">
+                <h2 class="mb-3">About Us</h2>
+                <div class="about-content" style="white-space: pre-line;">{{ website.content.about }}</div>
+            </div>
+            
+            <!-- Services Section -->
+            <div class="mb-5">
+                <h2 class="mb-3">Our Services</h2>
+                <div class="row g-4">
+                    {% for service in website.content.services %}
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <h3 class="h5 card-title">{{ service.name }}</h3>
+                                <p class="card-text">{{ service.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Features Section -->
+            <div class="mb-5">
+                <h2 class="mb-3">Why Choose Us?</h2>
+                <div class="list-group">
+                    {% for feature in website.content.features %}
+                    <div class="list-group-item border-0 py-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3 text-primary">
+                                <i class="bi bi-check-circle-fill" style="font-size: 1.5rem;"></i>
+                            </div>
+                            <div>
+                                <h4 class="h6 mb-1">{{ feature.title }}</h4>
+                                <p class="mb-0 text-muted">{{ feature.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Contact Section -->
+            <div class="mb-4">
+                <h2 class="mb-3">Contact Us</h2>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3 text-primary">
+                                <i class="bi bi-envelope" style="font-size: 1.5rem;"></i>
+                            </div>
+                            <div>
+                                <h4 class="h6 mb-0">Email</h4>
+                                <p class="mb-0">{{ website.content.contact.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3 text-primary">
+                                <i class="bi bi-telephone" style="font-size: 1.5rem;"></i>
+                            </div>
+                            <div>
+                                <h4 class="h6 mb-0">Phone</h4>
+                                <p class="mb-0">{{ website.content.contact.phone }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3 text-primary">
+                                <i class="bi bi-geo-alt" style="font-size: 1.5rem;"></i>
+                            </div>
+                            <div>
+                                <h4 class="h6 mb-0">Address</h4>
+                                <p class="mb-0">{{ website.content.contact.address }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

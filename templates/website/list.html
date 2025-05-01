@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}My Websites{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>My Websites</h2>
+    <a href="{% url 'website-create' %}" class="btn btn-primary">
+        <i class="bi bi-plus"></i> Create New
+    </a>
+</div>
+
+<div class="row">
+    {% for website in websites %}
+    <div class="col-md-4 mb-4">
+        <div class="card website-card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ website.title }}</h5>
+                <p class="card-text text-muted">
+                    {{ website.business_type }} - {{ website.industry }}
+                </p>
+                <p class="card-text">
+                    <small class="text-muted">Last updated: {{ website.updated_at|date:"M d, Y" }}</small>
+                </p>
+            </div>
+            <div class="card-footer bg-transparent">
+                <a href="{% url 'website-edit' website.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                <a href="{% url 'website-preview' website.id %}" class="btn btn-sm btn-outline-success">Preview</a>
+                <form method="post" action="{% url 'website-delete' website.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this website?')">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            You don't have any websites yet. <a href="{% url 'website-create' %}">Create your first website</a>.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

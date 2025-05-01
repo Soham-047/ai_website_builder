@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI Website Builder{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    {% load crispy_forms_tags %}
+    <style>
+        .navbar-brand {
+            font-weight: bold;
+        }
+        .sidebar {
+            min-height: calc(100vh - 56px);
+            background-color: #f8f9fa;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .website-card {
+            transition: transform 0.2s;
+        }
+        .website-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">AI Website Builder</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'website-list-view' %}">My Websites</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'website-create' %}">Create New</a>
+                        </li>
+                        {% if user.role and user.role.name == 'Admin' %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                    Admin
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'user-management' %}">User Management</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'role-management' %}">Role Management</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i> {{ user.email }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" onclick="clearURLAndLogout(event)" href="{% url 'logout' %}">Logout</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            {% if user.is_authenticated %}
+            <div class="col-md-3 col-lg-2 sidebar p-3">
+                <div class="list-group">
+                    <a href="{% url 'website-list-view' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-collection"></i> My Websites
+                    </a>
+                    <a href="{% url 'website-create' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-plus-circle"></i> Create New
+                    </a>
+                    <a href="{% url 'ai-generator' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-robot"></i> AI Generator
+                    </a>
+                    {% if user.role and user.role.name == 'Admin' %}
+                        <a href="{% url 'user-management' %}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-people"></i> User Management
+                        </a>
+                        <a href="{% url 'role-management' %}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-shield-lock"></i> Role Management
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            <div class="{% if user.is_authenticated %}col-md-9 col-lg-10{% else %}col-12{% endif %} main-content">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Function to clear URL search parameters and redirect to logout
+        function clearURLAndLogout(event) {
+            event.preventDefault();  // Prevent the default link action (logout request)
+    
+            // Use the history API to remove search parameters from the URL
+            const currentURL = new URL(window.location.href);
+            currentURL.searchParams.delete('query'); // Or delete any other search parameters you may have
+            window.history.pushState({}, '', currentURL); // This will update the URL without reloading the page
+    
+            // After clearing the search parameters, proceed with the logout request
+            window.location.href = "{% url 'login' %}"; // Redirect to the logout URL
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
