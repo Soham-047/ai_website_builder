@@ -171,10 +171,15 @@ class WebsiteEditView(View):
     def get(self, request, pk):
         website = get_object_or_404(Website, pk=pk, owner=request.user)
         return render(request, 'website/edit.html', {'website': website})
-
+import random
 class WebsiteListView(View):
     def get(self, request):
-        websites = Website.objects.filter(owner=request.user)
+        if request.user.is_authenticated:
+            websites = Website.objects.filter(owner=request.user)
+        else:
+            # Show 3 random public websites (you can adjust the number)
+            all_websites = Website.objects.all()
+            websites = random.sample(list(all_websites), min(3, all_websites.count()))
         return render(request, 'website/list.html', {'websites': websites})
 
 class WebsitePreviewView(View):

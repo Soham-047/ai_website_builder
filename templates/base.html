@@ -44,6 +44,10 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'website-create' %}">Create New</a>
                         </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'website-list-view' %}">View Random Samples</a>
+                        </li>
                         {% if user.role and user.role.name == 'Admin' %}
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
