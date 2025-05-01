@@ -98,7 +98,8 @@ Overview:
 🚀 7. Run the Server
 
     python manage.py runserver
-    Then open your browser:
+Then open your browser:
+
     http://127.0.0.1:8000/
 
 🥳 Happy Website Building!! 🥳
