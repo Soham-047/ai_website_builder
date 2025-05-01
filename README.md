@@ -1,7 +1,8 @@
 🧠 AI Website Builder (Django + JWT + Gemini AI)
+
 Overview:
 
-    matically create structured content for business use cases. The app supports role-based access, user management, and CRUD operations for generated websites.
+    Automatically create structured content for business use cases. The app supports role-based access, user management, and CRUD operations for generated websites.
   <img width="1710" alt="Screenshot 2025-05-02 at 12 21 46 AM" src="https://github.com/user-attachments/assets/4c3ad4b9-ea6e-4897-a7a7-1f5b761624b4" />
 
 
